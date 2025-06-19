@@ -5,7 +5,7 @@ import time
 window = tkinter.Tk()
 # Создаю холст 400 на 400
 canvas = tkinter.Canvas(window, width=400, height=400)
-canvas.pack()
+canvas.pack() # Отвечает за отображение
 # Список из 5 цветов
 color = ["blue", "brown3", "burlywood1", "chartreuse", "cyan1"]  
 # Пустой список для хранения словарей с данными о кругах
