@@ -1,34 +1,40 @@
 # Задача с timedelta: Написать программу, которая выводит информацию о том, сколько осталось времени до часа «Икс».
 # Решение:
-import datetime
+import datetime # Импортируем модуль datetime 
 
-def choose_plural(s, k):
-    if s % 100 in [11,12,13,14]: return f"{s} {k[2]}"
-    if s % 10 == 1: return f"{s} {k[0]}"
-    if s % 10 in [2, 3, 4]: return f"{s} {k[1]}"
-    return f"{s} {k[2]}"
+def choose_plural(s, k): # Функция для добавления к цифре существительного в нужной форме
+    if s % 100 in [11,12,13,14]: return f"{s} {k[2]}" # если остаток от деления в промежутке 11-14 существительное примет 3 форму
+    if s % 10 == 1: return f"{s} {k[0]}" # если остаток от деления равен 1 существительное примет 1 форму
+    if s % 10 in [2, 3, 4]: return f"{s} {k[1]}" # если остаток от деления равен 2-4 существительное примет 2 форму
+    return f"{s} {k[2]}" # В остальных случаях существительное примет 3 форму 
 
-try:
-    date_today = datetime.datetime.now().replace(second=0, microsecond=0)
-    date = input("Введите ДД.ММ.ГГГГ ЧЧ:ММ: ")
+try: # Если пользователь вводит строку, несоответствующую формату, программа выведет на экран надпись «Ошибка».
+    # С помощью модуля datetime в переменную вывожу текущее местное время и дату
+    # удаляю секунды и микросекунды, чтобы избежать ошибок в дальнейших расчётах
+    date_today = datetime.datetime.now().replace(second=0, microsecond=0) 
+    date = input("Введите ДД.ММ.ГГГГ ЧЧ:ММ: ") # Пользователь вводит дату и время
+    # С помощью .datetime.strptime преобразовываем строку пользователя в объект datetime
     date_x = datetime.datetime.strptime(date, '%d.%m.%Y %H:%M')
-    if date_x > date_today:
-        delta = (date_x - date_today)
-        h = delta.seconds // 3600
+    if date_x > date_today: # Если введенные дата/время меньше текущей, программа должна вывести надпись «Ошибка».
+        delta = (date_x - date_today) # Нахожу время timedelta - разницой между введёнными пользователем и актуалными временем и датой 
+        h = delta.seconds // 3600 # Переменная с округлённым значением количества часов
         
-        if not delta.days == 0: day = choose_plural(delta.days, ("день", "дня", "дней"))
-        else: day = ""
+        day = choose_plural(delta.days, ("день", "дня", "дней"))
+        if delta.days > 0: days = day + " " # Если кол-во дней болше 0, отображается их количество и существителное в нужной форме
+        else: days = "" # Если кол-во дней равно 0, они не отображаются
         hour = choose_plural(h, ("час", "часа", "часов"))
-        if not h == 0: hours = hour
-        else: hours = "" 
+        if h > 0: hours = hour + " " # Если кол-во часов болше 0, отображается их количество и существителное в нужной форме
+        else: hours = "" # Если кол-во часов равно 0, они не отображаются
         minute = choose_plural((delta.seconds % 3600 // 60), ("минута", "минуты", "минут"))
-        if not (delta.seconds % 3600 // 60) == 0: minutes = minute
-        else: minutes = ""
+        # Если кол-во минут болше 0, отображается их количество и существителное в нужной форме
+        if delta.seconds % 3600 // 60 > 0: minutes = minute 
+        else: minutes = "" # Если кол-во минут равно 0, они не отображаются
         
-        if delta.days > 1: print(f'До часа "Икс" {day} и {hour} {minute}')
-        elif h > 1 and day == "": print(f'До часа "Икс" {hour} и {minute}')
-        elif "" in [day, hours, minutes]: print(f'Час "Икс" сегодня')
-        else: print(f'До часа "Икс" {day} {hours} {minutes}')
+        if delta.days > 1: print(f'До часа "Икс" {day} и {hour} {minute}') # Если дней осталось больше 1, будет показано запись в скобках
+        # Если времени осталось больше часа, но меньше дня, будет показано запись в скобках
+        elif h > 1 and day == "": print(f'До часа "Икс" {hour} и {minute}') 
+        elif "" in [day, hours, minutes]: print(f'Час "Икс" сегодня') # Если время вышло, будет показано запись в скобках
+        else: print(f'До часа "Икс" {day} {hours} {minutes}') # Если времени чуть болше суток, будет показано запись в скобках
     else: print("Ошибка")
 except ValueError:
     print("Ошибка")
